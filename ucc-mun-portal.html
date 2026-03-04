@@ -1,0 +1,932 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>UCC @ UTMUN – Delegation Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg-dark: #020617;
+      --bg-card: rgba(15,23,42,0.96);
+      --bg-card-soft: rgba(15,23,42,0.8);
+      --accent: #0ea5e9;
+      --accent-soft: rgba(56,189,248,0.15);
+      --accent-strong: #22c55e;
+      --danger: #ef4444;
+      --warning: #facc15;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-subtle: rgba(148,163,184,0.35);
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 55%, #020617 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .layout {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .top-banner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr) minmax(0, 1.4fr);
+      gap: 16px;
+      padding: 18px 20px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 0 0, rgba(56,189,248,0.25), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(59,130,246,0.4), transparent 55%),
+        linear-gradient(135deg, #020617, #020617 25%, #020617 60%, #020617);
+      border: 1px solid rgba(148,163,184,0.4);
+      box-shadow: 0 22px 60px rgba(15,23,42,0.9);
+      align-items: center;
+    }
+
+    .school-block h1 {
+      font-size: 1.2rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 0 0 4px;
+      color: #e5e7eb;
+    }
+
+    .school-block .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15,23,42,0.8);
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 4px 9px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .school-block .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(56,189,248,0.28);
+    }
+
+    .school-block .address {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .title-block {
+      text-align: center;
+    }
+
+    .title-block h2 {
+      margin: 0;
+      font-size: 1.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #f9fafb;
+    }
+
+    .title-block .subtitle {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+    }
+
+    .stats {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .stat-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 190px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 0.8rem;
+    }
+
+    .stat-chip-label { color: var(--text-muted); }
+    .stat-chip-value { font-weight: 600; color: #f9fafb; }
+
+    .main {
+      display: grid;
+      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.3fr);
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 1000px) {
+      .top-banner {
+        grid-template-columns: 1fr;
+        text-align: left;
+      }
+      .stats { align-items: flex-start; }
+      .main { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      padding: 14px 16px;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.85);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #e5e7eb;
+    }
+
+    .card-title-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .card-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .input, .select {
+      background: rgba(15,23,42,0.9);
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.55);
+      padding: 6px 10px;
+      color: var(--text-main);
+      font-size: 0.8rem;
+      min-width: 140px;
+    }
+
+    .input::placeholder { color: rgba(148,163,184,0.7); }
+
+    .pill {
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.72rem;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .pill.exp-beginner { border-color: #22c55e; color: #bbf7d0; background: rgba(34,197,94,0.08); }
+    .pill.exp-intermediate { border-color: #38bdf8; color: #bae6fd; background: rgba(56,189,248,0.08); }
+    .pill.exp-advanced { border-color: #a855f7; color: #e9d5ff; background: rgba(168,85,247,0.12); }
+
+    .pill.assignment-true {
+      border-color: rgba(34,197,94,0.8);
+      background: rgba(34,197,94,0.12);
+      color: #bbf7d0;
+    }
+    .pill.assignment-false {
+      border-color: var(--danger);
+      background: rgba(239,68,68,0.16);
+      color: #fecaca;
+    }
+
+    .pill.status-withdrawn {
+      border-color: rgba(248,250,252,0.4);
+      background: rgba(148,163,184,0.18);
+      color: #e5e7eb;
+    }
+
+    .table-wrapper {
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.4);
+      overflow: hidden;
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.18), transparent 55%);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    thead {
+      background: rgba(15,23,42,0.96);
+    }
+
+    th, td {
+      padding: 7px 10px;
+      text-align: left;
+    }
+
+    th {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(148,163,184,0.5);
+      white-space: nowrap;
+    }
+
+    tbody tr:nth-child(odd) {
+      background: rgba(15,23,42,0.85);
+    }
+    tbody tr:nth-child(even) {
+      background: rgba(15,23,42,0.82);
+    }
+
+    tbody tr:hover {
+      background: rgba(30,64,175,0.75);
+    }
+
+    .delegate-name {
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    .muted {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .side-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tabs {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tab {
+      border-radius: var(--radius-pill);
+      padding: 4px 9px;
+      font-size: 0.75rem;
+      border: 1px solid rgba(148,163,184,0.65);
+      background: rgba(15,23,42,0.95);
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .tab.active {
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.3), rgba(15,23,42,0.98));
+      color: #f9fafb;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56,189,248,0.35);
+    }
+
+    .attendance-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0 10px;
+    }
+
+    .summary-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: var(--radius-pill);
+      padding: 4px 8px;
+      font-size: 0.74rem;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.98);
+    }
+
+    .summary-chip.present-voting { border-color: var(--accent-strong); background: rgba(34,197,94,0.06); }
+    .summary-chip.present { border-color: var(--warning); background: rgba(250,204,21,0.08); }
+    .summary-chip.absent { border-color: var(--danger); background: rgba(239,68,68,0.08); }
+
+    .dot-present-voting {
+      width: 7px; height:7px; border-radius:999px;
+      background: var(--accent-strong);
+    }
+    .dot-present {
+      width: 7px; height:7px; border-radius:999px;
+      background: var(--warning);
+    }
+    .dot-absent {
+      width: 7px; height:7px; border-radius:999px;
+      background: var(--danger);
+    }
+
+    .attendance-list {
+      max-height: 260px;
+      overflow: auto;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.96);
+    }
+
+    .attendance-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 0.9fr);
+      gap: 6px;
+      padding: 6px 8px;
+      font-size: 0.78rem;
+      border-bottom: 1px solid rgba(15,23,42,0.95);
+    }
+
+    .attendance-row:nth-child(odd) { background: rgba(15,23,42,0.97); }
+    .attendance-row:nth-child(even) { background: rgba(15,23,42,0.92); }
+
+    .attendance-status-pill {
+      justify-self: flex-start;
+      border-radius: var(--radius-pill);
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      border: 1px solid rgba(148,163,184,0.6);
+      color: var(--text-muted);
+      background: rgba(15,23,42,0.9);
+    }
+    .attendance-status-pill.pv {
+      border-color: var(--accent-strong);
+      color: #bbf7d0;
+      background: rgba(34,197,94,0.12);
+    }
+    .attendance-status-pill.p {
+      border-color: var(--warning);
+      color: #fef9c3;
+      background: rgba(250,204,21,0.12);
+    }
+    .attendance-status-pill.a {
+      border-color: var(--danger);
+      color: #fecaca;
+      background: rgba(239,68,68,0.12);
+    }
+
+    .links-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .link-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 12px;
+      background: var(--bg-card-soft);
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 0.78rem;
+    }
+
+    .link-row .label {
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .link-row a, .chip-copy {
+      font-size: 0.78rem;
+      color: #e0f2fe;
+      text-decoration: none;
+      cursor: pointer;
+      border-radius: var(--radius-pill);
+      padding: 3px 9px;
+      border: 1px solid rgba(56,189,248,0.6);
+      background: rgba(15,23,42,0.95);
+    }
+
+    .chip-copy:active {
+      transform: scale(0.97);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 14px;
+      right: 14px;
+      background: rgba(15,23,42,0.98);
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(56,189,248,0.7);
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      color: #e0f2fe;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(6px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 50;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .committee-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .committee-badge {
+      border-radius: var(--radius-pill);
+      padding: 2px 8px;
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .committee-badge.active {
+      background: rgba(56,189,248,0.15);
+      color: #e0f2fe;
+      border-color: var(--accent);
+    }
+
+    .small-note {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <section class="top-banner">
+    <div class="school-block">
+      <h1>Upper Canada College</h1>
+      <div class="badge">
+        <span class="badge-dot"></span>
+        <span>UCC Delegation – UTMUN 2026</span>
+      </div>
+      <div class="address">
+        200 Lonsdale Road, Toronto, ON, M4V 1W6, Canada
+      </div>
+    </div>
+    <div class="title-block">
+      <h2>Legends Return</h2>
+      <div class="subtitle">Welcome Back To Utmun</div>
+    </div>
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <section class="main">
+    <!-- Left: Delegates -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">
+            <span class="card-title-dot"></span>
+            Delegates & Committees
+          </div>
+          <div class="card-subtitle">Search, filter, and review your delegation.</div>
+        </div>
+      </div>
+      <div class="filters">
+        <input id="searchInput" class="input" placeholder="Search by name, code, committee..." />
+        <select id="committeeSelect" class="select">
+          <option value="">All committees</option>
+        </select>
+        <select id="experienceSelect" class="select">
+          <option value="">All experience levels</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Advanced">Advanced</option>
+        </select>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+          <tr>
+            <th>Code</th>
+            <th>Delegate</th>
+            <th>Experience</th>
+            <th>Committee</th>
+            <th>Position</th>
+            <th>Assignment</th>
+          </tr>
+          </thead>
+          <tbody id="delegatesTbody"></tbody>
+        </table>
+      </div>
+      <div class="small-note" id="delegateCountNote"></div>
+      <div class="committee-badges" id="committeeBadges"></div>
+    </div>
+
+    <!-- Right: Attendance & Resources -->
+    <div class="side-stack">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">
+              <span class="card-title-dot"></span>
+              Attendance By Session
+            </div>
+            <div class="card-subtitle">Track who is present, voting, or absent.</div>
+          </div>
+        </div>
+        <div class="tabs" id="sessionTabs"></div>
+        <div class="attendance-summary" id="attendanceSummary"></div>
+        <div class="attendance-list" id="attendanceList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">
+              <span class="card-title-dot"></span>
+              Key Links & Contacts
+            </div>
+            <div class="card-subtitle">Conference itinerary, policies, and secretariat emails.</div>
+          </div>
+        </div>
+        <div class="links-grid">
+          <div class="link-row">
+            <div>
+              <div class="label">Itinerary</div>
+              <div class="muted">Conference schedule and rooming.</div>
+            </div>
+            <a href="https://www.utmun.org/itinerary" target="_blank" rel="noreferrer">Open</a>
+          </div>
+          <div class="link-row">
+            <div>
+              <div class="label">Registration Policies</div>
+              <div class="muted">Deadlines, payments, and changes.</div>
+            </div>
+            <a href="https://www.utmun.org/operation-policy" target="_blank" rel="noreferrer">Open</a>
+          </div>
+          <div class="link-row">
+            <div>
+              <div class="label">FAQ</div>
+              <div class="muted">Logistics, dress code, conduct.</div>
+            </div>
+            <a href="https://www.utmun.org/faq" target="_blank" rel="noreferrer">Open</a>
+          </div>
+          <div class="link-row">
+            <div>
+              <div class="label">Secretary-General</div>
+              <div class="muted">General conference inquiries.</div>
+            </div>
+            <button class="chip-copy" data-copy="sg@utmun.org">sg@utmun.org</button>
+          </div>
+          <div class="link-row">
+            <div>
+              <div class="label">USG External</div>
+              <div class="muted">External relations, partnerships.</div>
+            </div>
+            <button class="chip-copy" data-copy="external@utmun.org">external@utmun.org</button>
+          </div>
+          <div class="link-row">
+            <div>
+              <div class="label">Director of Equity</div>
+              <div class="muted">Equity, inclusion, conduct.</div>
+            </div>
+            <button class="chip-copy" data-copy="equity@utmun.org">equity@utmun.org</button>
+          </div>
+          <div class="link-row">
+            <div>
+              <div class="label">Registration</div>
+              <div class="muted">Payments, rosters, updates.</div>
+            </div>
+            <button class="chip-copy" data-copy="registration@utmun.org">registration@utmun.org</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast">Copied to clipboard</div>
+
+<script>
+  const delegates = [
+    { num:1, code:1550, name:"John, Mboutsiadis", experience:"Advanced", experienceRaw:"Advanced (Attended 4 or more past MUN conferences)", committee:"Y2K Millennium Bug", committeeCode:"Y2K", position:"David Boothby", assignmentSent:true, status:"Active" },
+    { num:2, code:1634, name:"Andrew, Perri", experience:"Intermediate", experienceRaw:"Intermediate (Attended 2-3 past MUN conferences)", committee:"Operation Varsity Blues", committeeCode:"OVB", position:"Amin Khoury", assignmentSent:true, status:"Active" },
+    { num:3, code:1635, name:"Robert, Guo", experience:"Intermediate", experienceRaw:"Intermediate (Attended 2-3 past MUN conferences)", committee:"Operation Varsity Blues", committeeCode:"OVB", position:"PIMPCO Corporate Representative", assignmentSent:true, status:"Active" },
+    { num:4, code:1636, name:"Milan, Viswanathan", experience:"Advanced", experienceRaw:"Advanced (Attended 4 or more past MUN conferences)", committee:"Ad Hoc", committeeCode:"ADHOC", position:"Praetor of Prevention", assignmentSent:true, status:"Active" },
+    { num:5, code:1637, name:"Tiger, Ma", experience:"Intermediate", experienceRaw:"Intermediate (Attended 2-3 past MUN conferences)", committee:"United Nations Environmental Programme", committeeCode:"UNEP", position:"Saudi Arabia", assignmentSent:true, status:"Active" },
+    { num:6, code:1638, name:"Dyaus, Pan", experience:"Advanced", experienceRaw:"Advanced (Attended 4 or more past MUN conferences)", committee:"Economic Commission for Latin America and the Caribbean", committeeCode:"ECLAC", position:"Colombia", assignmentSent:true, status:"Active" },
+    { num:7, code:1639, name:"Aidan, Fisher", experience:"Advanced", experienceRaw:"Advanced (Attended 4 or more past MUN conferences)", committee:"Economic Commission for Latin America and the Caribbean", committeeCode:"ECLAC", position:"Mexico", assignmentSent:true, status:"Active" },
+    { num:8, code:1640, name:"Will, Chandra", experience:"Advanced", experienceRaw:"Advanced (Attended 4 or more past MUN conferences)", committee:"Fiji Water", committeeCode:"FJW", position:"Laurent Freixe - CEO of Nestlé Waters", assignmentSent:true, status:"Active" },
+    { num:9, code:1641, name:"Austin, Siu", experience:"Beginner", experienceRaw:"Beginner (attended 0-1 past MUN conferences)", committee:"Y2K Millennium Bug", committeeCode:"Y2K", position:"Sergio Vieira de Mallo", assignmentSent:true, status:"Active" },
+    { num:10, code:1642, name:"Hashim, Israr", experience:"Intermediate", experienceRaw:"Intermediate (Attended 2-3 past MUN conferences)", committee:"Withdrawn", committeeCode:"WITHDRAWN", position:"WITHDRAWN", assignmentSent:true, status:"Withdrawn" },
+    { num:11, code:1691, name:"Ej, Weinstein", experience:"Intermediate", experienceRaw:"Intermediate (Attended 2-3 past MUN conferences)", committee:"Revolutionists (SAWI)", committeeCode:"SAWI - REVOLUTIONISTS", position:"Antonio Nariño", assignmentSent:true, status:"Active" },
+    { num:12, code:1692, name:"Jett, Nemeth", experience:"Intermediate", experienceRaw:"Intermediate (Attended 2-3 past MUN conferences)", committee:"United Nations Forum on Forests", committeeCode:"UNFF", position:"Mexico", assignmentSent:true, status:"Active" },
+    { num:13, code:1694, name:"Pranav, Vetrichelvan", experience:"Intermediate", experienceRaw:"Intermediate (Attended 2-3 past MUN conferences)", committee:"Fimbulwinter (JCC)", committeeCode:"FBW - JOTNAR", position:"Fenrir", assignmentSent:true, status:"Active" },
+    { num:14, code:1695, name:"Hunter, De Abreu", experience:"Intermediate", experienceRaw:"Intermediate (Attended 2-3 past MUN conferences)", committee:"South Sea Bubble", committeeCode:"SSB", position:"James Craggs the Elder", assignmentSent:true, status:"Active" },
+    { num:15, code:1711, name:"Hesam, Naseer", experience:"Advanced", experienceRaw:"Advanced (Attended 4 or more past MUN conferences)", committee:"Fiji Water", committeeCode:"FJW", position:"Sitiveni Rabuka - PM of Fiji", assignmentSent:true, status:"Active" },
+    { num:16, code:1712, name:"Ibrahim, Naseer", experience:"Beginner", experienceRaw:"Beginner (attended 0-1 past MUN conferences)", committee:"World Food Programme", committeeCode:"WFP", position:"Principality of Monaco (Prinçipatu de Mùnegu)", assignmentSent:true, status:"Active" },
+    { num:17, code:1726, name:"Bowie, Dixon", experience:"Advanced", experienceRaw:"Advanced (Attended 4 or more past MUN conferences)", committee:"United Nations Forum on Forests", committeeCode:"UNFF", position:"Brazil", assignmentSent:true, status:"Active" },
+    { num:18, code:1734, name:"Andrew, Weng", experience:"Intermediate", experienceRaw:"Intermediate (Attended 2-3 past MUN conferences)", committee:"Boardroom for Idol Advocacy and Safeguarding", committeeCode:"BIAS", position:"Holland - Current Soloist", assignmentSent:true, status:"Active" },
+    { num:19, code:1784, name:"Joshua, Chou", experience:"Advanced", experienceRaw:"Advanced (Attended 4 or more past MUN conferences)", committee:"Withdrawn", committeeCode:"WITHDRAWN", position:"WITHDRAWN", assignmentSent:true, status:"Withdrawn" },
+    { num:20, code:1786, name:"Andre, Canto Cubas", experience:"Intermediate", experienceRaw:"Intermediate (Attended 2-3 past MUN conferences)", committee:"Maple Syrup, Money, and Markets", committeeCode:"MMM", position:"CEO of BarrelSecure", assignmentSent:true, status:"Active" },
+    { num:21, code:1788, name:"Aulia, Shahid", experience:"Advanced", experienceRaw:"Advanced (Attended 4 or more past MUN conferences)", committee:"United Nations Genetics Ethics Negotiation Entity", committeeCode:"UNGENE", position:"Brazil", assignmentSent:true, status:"Active" },
+    { num:22, code:1789, name:"Muhammad, Chaudhry", experience:"Intermediate", experienceRaw:"Intermediate (Attended 2-3 past MUN conferences)", committee:"Maple Syrup, Money, and Markets", committeeCode:"MMM", position:"New Brunswick Maple Syrup Representative", assignmentSent:true, status:"Active" },
+    { num:23, code:1790, name:"Kimi, Zhao", experience:"Intermediate", experienceRaw:"Intermediate (Attended 2-3 past MUN conferences)", committee:"Royalists (SAWI)", committeeCode:"SAWI - ROYALISTS", position:"Gabriel J. de Yermo", assignmentSent:true, status:"Active" },
+    { num:24, code:1830, name:"Haoyun, Zhao", experience:"Intermediate", experienceRaw:"Intermediate (Attended 2-3 past MUN conferences)", committee:"The Gamers League in Organization, Regulation, and Yield", committeeCode:"GLORY", position:"Feng Xianjun - Chairman of GLORY Professional Alliance", assignmentSent:true, status:"Active" },
+    { num:25, code:1832, name:"Sonny, Dixon", experience:"Intermediate", experienceRaw:"Intermediate (Attended 2-3 past MUN conferences)", committee:"United Nations Global Commission on Cybercrime", committeeCode:"UNGCC", position:"New Zealand", assignmentSent:true, status:"Active" },
+    { num:26, code:1836, name:"Ibrahim, Chaudhry", experience:"Beginner", experienceRaw:"Beginner (attended 0-1 past MUN conferences)", committee:"United Nations Global Commission on Cybercrime", committeeCode:"UNGCC", position:"Malaysia", assignmentSent:true, status:"Active" },
+    { num:27, code:1837, name:"Sebastian, Yutian Chen", experience:"Advanced", experienceRaw:"Advanced (Attended 4 or more past MUN conferences)", committee:"Revisiting the Kimberly Process", committeeCode:"RKP", position:"Sierra Leone", assignmentSent:true, status:"Active" },
+    { num:28, code:1841, name:"Deva, Dhillon", experience:"Beginner", experienceRaw:"Beginner (attended 0-1 past MUN conferences)", committee:"United Nations Genetics Ethics Negotiation Entity", committeeCode:"UNGENE", position:"Cuba", assignmentSent:true, status:"Active" },
+    { num:29, code:1842, name:"William, Huang", experience:"Beginner", experienceRaw:"Beginner (attended 0-1 past MUN conferences)", committee:"United Nations Forum on Forests", committeeCode:"UNFF", position:"Papua New Guinea", assignmentSent:true, status:"Active" },
+    { num:30, code:1843, name:"Rouhi, Assal", experience:"Advanced", experienceRaw:"Advanced (Attended 4 or more past MUN conferences)", committee:"Global Economic and Labour Development Assembly", committeeCode:"GELDA", position:"United Kingdom", assignmentSent:true, status:"Active" },
+    { num:31, code:1844, name:"Daniel, Albornoz", experience:"Beginner", experienceRaw:"Beginner (attended 0-1 past MUN conferences)", committee:"Critics Association for Film and Entertainment", committeeCode:"CAFE", position:"Eve Stewart", assignmentSent:true, status:"Active" },
+    { num:32, code:1845, name:"George, Karakoulas", experience:"Beginner", experienceRaw:"Beginner (attended 0-1 past MUN conferences)", committee:"World Food Programme", committeeCode:"WFP", position:"Republic of Zambia (Icalo ca Zambia)", assignmentSent:true, status:"Active" },
+    { num:33, code:1852, name:"Karam, Adam", experience:"Advanced", experienceRaw:"Advanced (Attended 4 or more past MUN conferences)", committee:"World Food Programme", committeeCode:"WFP", position:"Ukraine (Україна)", assignmentSent:true, status:"Active" },
+  ];
+
+  const attendanceRecords = [
+    { code:1550, name:"John, Mboutsiadis", committee:"Y2K Millennium Bug", position:"David Boothby", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Absent" ] },
+    { code:1634, name:"Andrew, Perri", committee:"Operation Varsity Blues", position:"Amin Khoury", s:[ "Present & Voting","", "Present & Voting","Present & Voting","","","" ] },
+    { code:1635, name:"Robert, Guo", committee:"Operation Varsity Blues", position:"PIMPCO Corporate Representative", s:[ "Present & Voting","", "Present & Voting","Present","","","" ] },
+    { code:1636, name:"Milan, Viswanathan", committee:"Ad Hoc", position:"Praetor of Prevention", s:[ "Present","Present","Present","Present","Present","Present","" ] },
+    { code:1637, name:"Tiger, Ma", committee:"United Nations Environmental Programme", position:"Saudi Arabia", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","" ] },
+    { code:1638, name:"Dyaus, Pan", committee:"Economic Commission for Latin America and the Caribbean", position:"Colombia", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting" ] },
+    { code:1639, name:"Aidan, Fisher", committee:"Economic Commission for Latin America and the Caribbean", position:"Mexico", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting" ] },
+    { code:1640, name:"Will, Chandra", committee:"Fiji Water", position:"Laurent Freixe - CEO of Nestlé Waters", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting" ] },
+    { code:1641, name:"Austin, Siu", committee:"Y2K Millennium Bug", position:"Sergio Vieira de Mallo", s:[ "Present","Present","Present","Present","Present","Present","Present" ] },
+    { code:1642, name:"Hashim, Israr", committee:"", position:"WITHDRAWN", s:[ "","","","","","","" ] },
+    { code:1691, name:"Ej, Weinstein", committee:"", position:"Antonio Nariño", s:[ "","","","","","","" ] },
+    { code:1692, name:"Jett, Nemeth", committee:"United Nations Forum on Forests", position:"Mexico", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Absent","Absent" ] },
+    { code:1694, name:"Pranav, Vetrichelvan", committee:"", position:"Fenrir", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","","" ] },
+    { code:1695, name:"Hunter, De Abreu", committee:"South Sea Bubble", position:"James Craggs the Elder", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting" ] },
+    { code:1711, name:"Hesam, Naseer", committee:"Fiji Water", position:"Sitiveni Rabuka - PM of Fiji", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting" ] },
+    { code:1712, name:"Ibrahim, Naseer", committee:"World Food Programme", position:"Principality of Monaco (Prinçipatu de Mùnegu)", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting" ] },
+    { code:1726, name:"Bowie, Dixon", committee:"United Nations Forum on Forests", position:"Brazil", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Absent" ] },
+    { code:1734, name:"Andrew, Weng", committee:"Boardroom for Idol Advocacy and Safeguarding", position:"Holland - Current Soloist", s:[ "Present","Present","Present","Present & Voting","Present & Voting","Present & Voting","Present & Voting" ] },
+    { code:1784, name:"Joshua, Chou", committee:"", position:"WITHDRAWN", s:[ "","","","","","","" ] },
+    { code:1786, name:"Andre, Canto Cubas", committee:"Maple Syrup, Money, and Markets", position:"CEO of BarrelSecure", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting" ] },
+    { code:1788, name:"Aulia, Shahid", committee:"United Nations Genetics Ethics Negotiation Entity", position:"Brazil", s:[ "Present & Voting","","","Present & Voting","","Present & Voting","" ] },
+    { code:1789, name:"Muhammad, Chaudhry", committee:"Maple Syrup, Money, and Markets", position:"New Brunswick Maple Syrup Representative", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present","Present & Voting","Present & Voting" ] },
+    { code:1790, name:"Kimi, Zhao", committee:"", position:"Gabriel J. de Yermo", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present" ] },
+    { code:1830, name:"Haoyun, Zhao", committee:"The Gamers League in Organization, Regulation, and Yield", position:"Feng Xianjun - Chairman of GLORY Professional Alliance", s:[ "Present","Present","Present","Present & Voting","Present & Voting","Present & Voting","Present & Voting" ] },
+    { code:1832, name:"Sonny, Dixon", committee:"United Nations Global Commission on Cybercrime", position:"New Zealand", s:[ "Present","Present","Present","Present","Present","Present","Present" ] },
+    { code:1836, name:"Ibrahim, Chaudhry", committee:"United Nations Global Commission on Cybercrime", position:"Malaysia", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present" ] },
+    { code:1837, name:"Sebastian, Yutian Chen", committee:"Revisiting the Kimberly Process", position:"Sierra Leone", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","" ] },
+    { code:1841, name:"Deva, Dhillon", committee:"United Nations Genetics Ethics Negotiation Entity", position:"Cuba", s:[ "Present & Voting","","","Present & Voting","","Present & Voting","" ] },
+    { code:1842, name:"William, Huang", committee:"United Nations Forum on Forests", position:"Papua New Guinea", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting" ] },
+    { code:1843, name:"Rouhi, Assal", committee:"Global Economic and Labour Development Assembly", position:"United Kingdom", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting" ] },
+    { code:1844, name:"Daniel, Albornoz", committee:"Critics Association for Film and Entertainment", position:"Eve Stewart", s:[ "Present","Present & Voting","Present","Present","Present & Voting","Present & Voting","Present & Voting" ] },
+    { code:1845, name:"George, Karakoulas", committee:"World Food Programme", position:"Republic of Zambia (Icalo ca Zambia)", s:[ "Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting","Present & Voting" ] },
+    { code:1852, name:"Karam, Adam", committee:"World Food Programme", position:"Ukraine (Україна)", s:[ "Present & Voting","Present & Voting","Absent","Absent","Absent","Present & Voting","Present & Voting" ] }
+  ];
+
+  const sessions = [1,2,3,4,5,6,7];
+
+  const statsEl = document.getElementById('stats');
+  const delegatesTbody = document.getElementById('delegatesTbody');
+  const searchInput = document.getElementById('searchInput');
+  const committeeSelect = document.getElementById('committeeSelect');
+  const experienceSelect = document.getElementById('experienceSelect');
+  const sessionTabs = document.getElementById('sessionTabs');
+  const attendanceSummary = document.getElementById('attendanceSummary');
+  const attendanceList = document.getElementById('attendanceList');
+  const delegateCountNote = document.getElementById('delegateCountNote');
+  const committeeBadges = document.getElementById('committeeBadges');
+  const toast = document.getElementById('toast');
+
+  let currentSession = 1;
+  let currentCommitteeBadge = '';
+
+  function computeStats() {
+    const active = delegates.filter(d => d.status === 'Active');
+    const committees = new Set(active.map(d => d.committeeCode));
+    const expCounts = { Beginner:0, Intermediate:0, Advanced:0 };
+    active.forEach(d => { expCounts[d.experience]++; });
+
+    statsEl.innerHTML = `
+      <div class="stat-chip">
+        <span class="stat-chip-label">Total Delegates</span>
+        <span class="stat-chip-value">${delegates.length}</span>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-chip-label">Active Delegates</span>
+        <span class="stat-chip-value">${active.length}</span>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-chip-label">Committees</span>
+        <span class="stat-chip-value">${committees.size}</span>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-chip-label">Beg / Int / Adv</span>
+        <span class="stat-chip-value">${expCounts.Beginner} / ${expCounts.Intermediate} / ${expCounts.Advanced}</span>
+      </div>
+    `;
+  }
+
+  function experienceClass(exp) {
+    if (exp === 'Beginner') return 'pill exp-beginner';
+    if (exp === 'Intermediate') return 'pill exp-intermediate';
+    return 'pill exp-advanced';
+  }
+
+  function renderDelegates() {
+    const search = searchInput.value.toLowerCase();
+    const committeeFilter = committeeSelect.value;
+    const expFilter = experienceSelect.value;
+
+    const filtered = delegates.filter(d => {
+      if (committeeFilter && d.committeeCode !== committeeFilter) return false;
+      if (currentCommitteeBadge && d.committeeCode !== currentCommitteeBadge) return false;
+      if (expFilter && d.experience !== expFilter) return false;
+      if (!search) return true;
+      const haystack = [
+        d.name,
+        d.code,
+        d.committee,
+        d.committeeCode,
+        d.position
+      ].join(' ').toLowerCase();
+      return haystack.includes(search);
+    });
+
+    delegateCountNote.textContent = `${filtered.length} of ${delegates.length} delegates shown`;
+
+    delegatesTbody.innerHTML = filtered.map(d => `
+      <tr>
+        <td>${d.code}</td>
+        <td>
+          <div class="delegate-name">${d.name}</div>
+          <div class="muted">${d.status === 'Withdrawn' ? 'Withdrawn' : 'Active'}</div>
+        </td>
+        <td><span class="${experienceClass(d.experience)}">${d.experience}</span></td>
+        <td>
+          <div>${d.committee}</div>
+          <div class="muted">${d.committeeCode}</div>
+        </td>
+        <td>${d.position}</td>
+        <td>
+          <span class="pill ${d.assignmentSent ? 'assignment-true' : 'assignment-false'}">
+            ${d.assignmentSent ? 'Sent' : 'Pending'}
+          </span>
+          ${d.status === 'Withdrawn' ? '<span class="pill status-withdrawn" style="margin-left:4px;">Withdrawn</span>' : ''}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function renderCommitteeFilters() {
+    const committeeCodes = Array.from(new Set(delegates.map(d => d.committeeCode))).sort();
+    committeeSelect.innerHTML = '<option value="">All committees</option>' + committeeCodes.map(code =>
+      `<option value="${code}">${code}</option>`
+    ).join('');
+
+    committeeBadges.innerHTML = committeeCodes.map(code => {
+      const count = delegates.filter(d => d.committeeCode === code && d.status === 'Active').length;
+      return `<button class="committee-badge" data-committee="${code}">${code} • ${count}</button>`;
+    }).join('');
+
+    committeeBadges.addEventListener('click', e => {
+      const btn = e.target.closest('.committee-badge');
+      if (!btn) return;
+      const code = btn.getAttribute('data-committee');
+      currentCommitteeBadge = (currentCommitteeBadge === code) ? '' : code;
+      document.querySelectorAll('.committee-badge').forEach(el => el.classList.remove('active'));
+      if (currentCommitteeBadge) {
+        document.querySelectorAll('.committee-badge').forEach(el => {
+          if (el.getAttribute('data-committee') === currentCommitteeBadge) el.classList.add('active');
+        });
+      }
+      renderDelegates();
+    });
+  }
+
+  function renderSessionTabs() {
+    sessionTabs.innerHTML = sessions.map(s => `
+      <button class="tab ${s === currentSession ? 'active' : ''}" data-session="${s}">Session ${s}</button>
+    `).join('');
+
+    sessionTabs.addEventListener('click', e => {
+      const btn = e.target.closest('.tab');
+      if (!btn) return;
+      currentSession = Number(btn.getAttribute('data-session'));
+      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+      btn.classList.add('active');
+      renderAttendance();
+    });
+  }
+
+  function renderAttendance() {
+    const idx = currentSession - 1;
+    let pv = 0, p = 0, a = 0;
+
+    const rows = attendanceRecords.map(rec => {
+      const status = rec.s[idx] || '';
+      let cls = '', label = '';
+      if (status === 'Present & Voting') { cls='pv'; label='Present & Voting'; pv++; }
+      else if (status === 'Present') { cls='p'; label='Present'; p++; }
+      else { cls='a'; label='Absent'; a++; }
+
+      return { rec, cls, label };
+    });
+
+    attendanceSummary.innerHTML = `
+      <div class="summary-chip present-voting">
+        <span class="dot-present-voting"></span>
+        <span>${pv} Present & Voting</span>
+      </div>
+      <div class="summary-chip present">
+        <span class="dot-present"></span>
+        <span>${p} Present</span>
+      </div>
+      <div class="summary-chip absent">
+        <span class="dot-absent"></span>
+        <span>${a} Absent / Not Marked</span>
+      </div>
+    `;
+
+    attendanceList.innerHTML = rows.map(({rec, cls, label}) => `
+      <div class="attendance-row">
+        <div>
+          <div class="delegate-name" style="font-size:0.8rem;">${rec.name}</div>
+          <div class="muted">#${rec.code}</div>
+        </div>
+        <div>
+          <div>${rec.committee || '—'}</div>
+          <div class="muted">${rec.position}</div>
+        </div>
+        <div>
+          <span class="attendance-status-pill ${cls}">${label}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function setupCopyChips() {
+    document.querySelectorAll('.chip-copy').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const text = btn.getAttribute('data-copy');
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast('Copied: ' + text);
+        } catch (e) {
+          showToast('Could not copy (clipboard blocked)');
+        }
+      });
+    });
+  }
+
+  let toastTimeout;
+  function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add('visible');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => toast.classList.remove('visible'), 2200);
+  }
+
+  function init() {
+    computeStats();
+    renderCommitteeFilters();
+    renderDelegates();
+    renderSessionTabs();
+    renderAttendance();
+    setupCopyChips();
+
+    searchInput.addEventListener('input', renderDelegates);
+    committeeSelect.addEventListener('change', renderDelegates);
+    experienceSelect.addEventListener('change', renderDelegates);
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
